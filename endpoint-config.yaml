@@ -1,0 +1,24 @@
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineEndpoint.schema.json
+name: gelato-magico-endpoint
+description: Endpoint para predição de vendas de sorvete baseado em temperatura
+auth_mode: key
+
+---
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
+name: gelato-magico-deployment
+endpoint_name: gelato-magico-endpoint
+model: azureml:gelato-magico-model@latest
+environment: 
+  conda_file: ./conda.yaml
+  image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04:latest
+code_configuration:
+  code: ./src
+  scoring_script: score.py
+instance_type: Standard_DS2_v2
+instance_count: 1
+request_settings:
+  request_timeout_ms: 90000
+  max_concurrent_requests_per_instance: 1
+  max_queue_wait_ms: 500
+environment_variables:
+  MLFLOW_TRACKING_URI: "azureml://brazilsouth.api.azureml.ms/mlflow/v1.0/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.MachineLearningServices/workspaces/{workspace}"
