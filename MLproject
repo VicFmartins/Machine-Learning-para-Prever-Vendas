@@ -10,17 +10,17 @@ entry_points:
       model-name: {type: str, default: "gelato-magico-model"}
       test-size: {type: float, default: 0.2}
       random-state: {type: int, default: 42}
-      register-model: {type: bool, default: false}
-    command: "python src/train.py --data {data} --experiment-name {experiment-name} --model-name {model-name} --test-size {test-size} --random-state {random-state} {register-model}"
+      artifact-dir: {type: str, default: "model_artifacts"}
+    command: "python train.py --data {data} --experiment-name {experiment-name} --model-name {model-name} --test-size {test-size} --random-state {random-state} --artifact-dir {artifact-dir}"
   
   evaluate:
     parameters:
-      model-name: {type: str, default: "gelato-magico-model"}
+      model-dir: {type: str, default: "model_artifacts"}
       test-data: {type: str, default: "data/test_data.csv"}
-    command: "python src/evaluate.py --model-name {model-name} --test-data {test-data}"
+      output-dir: {type: str, default: "evaluation_results"}
+    command: "python evaluate.py --model-dir {model-dir} --test-data {test-data} --output-dir {output-dir}"
   
   predict:
     parameters:
-      model-name: {type: str, default: "gelato-magico-model"}
-      input-data: {type: str, default: "data/input.json"}
-    command: "python src/predict.py --model-name {model-name} --input-data {input-data}"
+      input: {type: str, default: "data/sample_request.json"}
+    command: "python score.py --input {input}"

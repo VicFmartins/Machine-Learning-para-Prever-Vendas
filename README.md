@@ -1,81 +1,200 @@
-# Machine-Learning-para-Prever-Vendas
+# Machine Learning para Prever Vendas
 
-Visão Geral
-Este projeto desenvolve um modelo de regressão para prever vendas diárias de sorvete com base na temperatura ambiente, utilizando Azure Machine Learning e MLflow para um pipeline completo de MLOps.
-Cenário
-A sorveteria Gelato Mágico precisa otimizar sua produção diária baseada na temperatura prevista, reduzindo desperdícios e maximizando lucros através de predições precisas.
- Arquitetura
- azure-ml-icecream-sales-prediction
-├── 📁 data/
-│   └── icecream_sales.csv
-├── 📁 src/
-│   ├── train.py
-│   ├── score.py
-│   └── evaluate.py
-├── 📁 notebooks/
-│   └── eda_analysis.ipynb
-├── 📁 configs/
-│   ├── conda.yaml
-│   └── endpoint_config.yaml
-├── 📁 inputs/
-│   └── business_insights.txt
-├── requirements.txt
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/ML-scikit--learn-F7931E?logo=scikitlearn&logoColor=white)
+![MLflow](https://img.shields.io/badge/tracking-MLflow-0194E2)
+![Status](https://img.shields.io/badge/status-MVP%20executavel-2e8b57)
+
+Projeto de regressão para prever vendas diárias de sorvete com base na temperatura e em variáveis derivadas de calendário, com fluxo local de treinamento, avaliação, scoring e integração opcional com MLflow.
+
+## Visão Geral
+
+O cenário usado é o da sorveteria fictícia **Gelato Mágico**, que precisa prever demanda para:
+
+- reduzir desperdício de produção;
+- planejar compras de insumos;
+- ajustar equipe em dias de pico;
+- transformar previsão climática em decisão operacional.
+
+O projeto foi melhorado para ficar realmente executável localmente, sem depender obrigatoriamente de Azure Machine Learning para funcionar.
+
+## O Que o Projeto Faz
+
+- carrega uma base de vendas e temperatura;
+- gera features simples de calendário;
+- treina múltiplos modelos de regressão;
+- escolhe automaticamente o melhor pelo menor RMSE;
+- salva artefatos do modelo;
+- avalia o desempenho em base de teste;
+- executa inferência local via JSON;
+- suporta tracking com MLflow quando habilitado.
+
+## Estrutura Atual
+
+```text
+.
+├── README.md
+├── train.py
+├── evaluate.py
+├── score.py
 ├── MLproject
-└── README.md
+├── conda.yaml
+├── endpoint-config.yaml
+├── requirements.txt
+└── data/
+    ├── icecream_sales.csv
+    └── sample_request.json
+```
 
- Objetivos
- Treinar modelo de regressão para prever vendas baseado em temperatura
- Implementar rastreamento completo com MLflow
- Deploy de endpoint para inferência em tempo real
- Pipeline reproduzível e escalável
- Métricas Esperadas
-•	RMSE: < 50 unidades
-•	MAE: < 35 unidades
-•	R²: > 0.85
-🛠️ Stack Tecnológica
-•	Azure Machine Learning: Workspace, Compute, Endpoints
-•	MLflow: Tracking, Model Registry, Artifacts
-•	Scikit-learn: Algoritmos de regressão
-•	Python: 3.8+
-•	Pandas, NumPy: Manipulação de dados
- Quick Start
-1. Configuração do Ambiente
-# Clone o repositório
-git clone https://github.com/seu-usuario/azure-ml-icecream-sales-prediction.git
-cd azure-ml-icecream-sales-prediction
+## Principais Arquivos
 
-# Instale dependências
+### `train.py`
+
+Responsável por:
+
+- carregar dados reais ou gerar base sintética;
+- criar features;
+- treinar `LinearRegression`, `RandomForestRegressor` e `GradientBoostingRegressor`;
+- comparar métricas;
+- salvar `model.pkl` e `metadata.json`;
+- logar no MLflow opcionalmente.
+
+### `evaluate.py`
+
+Responsável por:
+
+- carregar o modelo salvo localmente;
+- avaliar em base de teste;
+- gerar métricas de regressão;
+- salvar relatório e gráficos.
+
+### `score.py`
+
+Responsável por:
+
+- carregar o modelo treinado;
+- receber payload JSON;
+- preparar as mesmas features do treinamento;
+- devolver previsões em formato compatível com uso local ou endpoint.
+
+## Stack
+
+- Python
+- pandas
+- numpy
+- scikit-learn
+- joblib
+- matplotlib
+- MLflow (opcional)
+
+## Como Executar
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/VicFmartins/Machine-Learning-para-Prever-Vendas.git
+cd Machine-Learning-para-Prever-Vendas
+```
+
+### 2. Crie e ative um ambiente virtual
+
+```bash
+python -m venv .venv
+```
+
+Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Linux ou macOS:
+
+```bash
+source .venv/bin/activate
+```
+
+### 3. Instale as dependências
+
+```bash
 pip install -r requirements.txt
+```
 
-2. Treinamento do Modelo
-# Execute o treinamento
-python src/train.py --data data/icecream_sales.csv --experiment-name gelato-magico
+### 4. Treine o modelo
 
-3. Deploy do Endpoint
-# Configure o endpoint
-az ml online-endpoint create -f configs/endpoint_config.yaml
+```bash
+python train.py --data data/icecream_sales.csv
+```
 
- Resultados
-Experimento no Azure ML Studio
+Se você quiser ativar tracking com MLflow:
 
-MLflow Model Registry
+```bash
+pip install mlflow
+python train.py --data data/icecream_sales.csv --enable-mlflow
+```
 
-Endpoint em Produção
- 
- Insights Obtidos
-•	Correlação forte entre temperatura e vendas (R² = 0.92)
-•	AutoML identificou modelo Gradient Boosting como melhor performer
-•	Temperatura acima de 30°C gera picos de demanda de +40%
-•	Sazonalidade semanal impacta significativamente as vendas
- Possibilidades de Evolução
-•	Incluir features de umidade e precipitação
-•	Implementar validação temporal (TimeSeriesSplit)
-•	A/B testing entre versões do modelo
-•	Dashboard BI para planejamento de produção
-•	Monitoramento de drift automático
- Estrutura dos Dados
-date,temperature_celsius,sales_units
-2024-01-01,25.5,180
-2024-01-02,28.2,220
-2024-01-03,32.1,310
+### 5. Avalie o modelo
 
+```bash
+python evaluate.py --model-dir model_artifacts --test-data data/icecream_sales.csv
+```
+
+### 6. Execute previsões locais
+
+```bash
+python score.py --input data/sample_request.json
+```
+
+## Exemplo de Payload
+
+```json
+{
+  "data": [
+    {
+      "temperature_celsius": 24.5,
+      "date": "2024-07-01"
+    },
+    {
+      "temperature_celsius": 30.0,
+      "date": "2024-07-02"
+    }
+  ]
+}
+```
+
+## Exemplo de Saída
+
+```json
+{
+  "predictions": [189.42, 244.17],
+  "model_info": {
+    "model_name": "gradient_boosting",
+    "features_used": ["temperature_celsius", "day_of_week", "month", "is_weekend", "temp_squared", "temp_high", "temp_low"],
+    "prediction_timestamp": "2026-03-22T00:00:00",
+    "num_predictions": 2
+  }
+}
+```
+
+## Melhorias Aplicadas Nesta Versão
+
+- remoção da dependência obrigatória de Azure para o fluxo principal;
+- correção de inconsistências entre treino, avaliação e scoring;
+- inclusão de base inicial e payload de exemplo;
+- atualização de dependências para versões mais realistas;
+- correção do `MLproject` e do `endpoint-config.yaml`;
+- documentação alinhada com o que o repositório realmente entrega;
+- suporte local mais forte para portfólio e demonstração.
+
+## Próximos Passos
+
+- adicionar validação temporal;
+- incluir mais features climáticas;
+- salvar gráficos comparativos do treino;
+- adicionar testes automatizados;
+- criar dashboard simples para previsões;
+- conectar o pipeline a previsão do tempo real.
+
+## Observação
+
+O projeto está pronto como MVP local de machine learning aplicado a negócio. Azure ML continua como possibilidade de evolução, mas o repositório agora já entrega valor e demonstração prática sem depender de infraestrutura externa para começar.

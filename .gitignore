@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+mlruns/
+model_artifacts/
+evaluation_results/

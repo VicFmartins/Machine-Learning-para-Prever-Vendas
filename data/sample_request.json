@@ -1,0 +1,16 @@
+{
+  "data": [
+    {
+      "temperature_celsius": 24.5,
+      "date": "2024-07-01"
+    },
+    {
+      "temperature_celsius": 30.0,
+      "date": "2024-07-02"
+    },
+    {
+      "temperature_celsius": 35.5,
+      "date": "2024-07-03"
+    }
+  ]
+}
