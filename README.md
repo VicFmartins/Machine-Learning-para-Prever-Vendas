@@ -92,7 +92,7 @@ Responsável por:
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/VicFmartins/Machine-Learning-para-Prever-Vendas.git
+git clone <url-do-repositorio>
 cd Machine-Learning-para-Prever-Vendas
 ```
 
